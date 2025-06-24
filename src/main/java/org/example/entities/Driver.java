@@ -50,7 +50,17 @@ public class Driver extends PanacheEntityBase {
     @JoinColumn(name = "companyFK")
     public Company company;
 
-    // additional relations (Depot, Service, Location) would go here
+    @ManyToOne
+    @JoinColumn(name = "depotFK")
+    public Depot depot;
+
+    @ManyToOne
+    @JoinColumn(name = "serviceFK")
+    public Service service;
+
+    @ManyToOne
+    @JoinColumn(name = "locationIDFK")
+    public Location location;
 
     @Column(name = "shuntservice")
     public Boolean shuntservice;
@@ -83,4 +93,10 @@ public class Driver extends PanacheEntityBase {
 
     @OneToMany(mappedBy = "driver")
     public List<DriverFiles> driverFiles;
+
+    @OneToMany(mappedBy = "driver")
+    public List<RouteDriver> routeDrivers;
+
+    @OneToMany(mappedBy = "driver")
+    public List<VehicleDriver> vehicleDrivers;
 }
