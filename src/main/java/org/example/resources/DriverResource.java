@@ -2,11 +2,16 @@ package org.example.resources;
 
 import jakarta.transaction.Transactional;
 import jakarta.ws.rs.*;
+import jakarta.ws.rs.core.Context;
 import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
+import jakarta.ws.rs.core.UriInfo;
 import org.eclipse.microprofile.openapi.annotations.Operation;
 import org.eclipse.microprofile.openapi.annotations.tags.Tag;
 import org.example.entities.Driver;
+import org.example.util.QueryOptions;
+import org.example.util.QueryUtils;
+import io.quarkus.hibernate.orm.panache.Panache;
 
 import java.util.List;
 
@@ -17,10 +22,10 @@ import java.util.List;
 public class DriverResource {
 
     @GET
-    @Operation(summary = "Retrieve a paginated list of drivers")
-    public List<Driver> getAll(@QueryParam("skip") @DefaultValue("0") int skip,
-                               @QueryParam("take") @DefaultValue("10") int take) {
-        return Driver.findAll().range(skip, skip + take - 1).list();
+    @Operation(summary = "Retrieve a paginated list of drivers with optional filtering and sorting")
+    public List<Driver> getAll(@Context UriInfo uriInfo) {
+        QueryOptions options = QueryUtils.from(uriInfo.getQueryParameters(), "id", 10);
+        return QueryUtils.find(Panache.getEntityManager(), Driver.class, options);
     }
 
     @GET

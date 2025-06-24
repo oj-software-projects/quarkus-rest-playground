@@ -2,11 +2,16 @@ package org.example.resources;
 
 import jakarta.transaction.Transactional;
 import jakarta.ws.rs.*;
+import jakarta.ws.rs.core.Context;
 import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
+import jakarta.ws.rs.core.UriInfo;
 import org.eclipse.microprofile.openapi.annotations.Operation;
 import org.eclipse.microprofile.openapi.annotations.tags.Tag;
 import org.example.entities.DriverFiles;
+import org.example.util.QueryOptions;
+import org.example.util.QueryUtils;
+import io.quarkus.hibernate.orm.panache.Panache;
 
 import java.util.List;
 
@@ -17,10 +22,10 @@ import java.util.List;
 public class DriverFileResource {
 
     @GET
-    @Operation(summary = "Retrieve all driver file entries")
-    public List<DriverFiles> getAll(@QueryParam("skip") @DefaultValue("0") int skip,
-                                    @QueryParam("take") @DefaultValue("10") int take) {
-        return DriverFiles.findAll().range(skip, skip + take - 1).list();
+    @Operation(summary = "Retrieve all driver file entries with optional filtering and sorting")
+    public List<DriverFiles> getAll(@Context UriInfo uriInfo) {
+        QueryOptions options = QueryUtils.from(uriInfo.getQueryParameters(), "id", 10);
+        return QueryUtils.find(Panache.getEntityManager(), DriverFiles.class, options);
     }
 
     @GET
