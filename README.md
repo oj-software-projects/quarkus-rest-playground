@@ -6,7 +6,7 @@ The application expects a Microsoft SQL Server database. The connection URL is p
 
 ## Prerequisites
 
-- Java 17
+ - Java 21
 - Maven 3.8+
 - A running SQL Server instance with the schema expected by the application. Set the connection URL through the `DATABASE_URL` environment variable, for example:
 
